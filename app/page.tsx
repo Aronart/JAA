@@ -1,101 +1,151 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useRef } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const uploadSectionRef = useRef<HTMLDivElement | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+  const handleFileUpload = async (file: File) => {
+    setUploadStatus("Uploading...");
+
+    try {
+      const formData = new FormData();
+      formData.append("files", file);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          setUploadedFileName(file.name);
+          setUploadStatus("Upload successful!");
+        } else {
+          setUploadStatus(result.message || "Upload failed. Please try again.");
+        }
+      } else {
+        setUploadStatus("Upload failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      setUploadStatus("An error occurred. Please try again.");
+    }
+  };
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      await handleFileUpload(file);
+    }
+  };
+
+  const openFileDialog = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const scrollToUploadSection = () => {
+    if (uploadSectionRef.current) {
+      uploadSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  return (
+    <div className="font-sans">
+      {/* Navigation */}
+      <nav className="flex justify-between items-center p-6 bg-white shadow">
+        <div className="text-xl font-bold">Temp</div>
+        <div className="flex items-center space-x-6">
+          <a href="#benefits" className="text-gray-600 hover:text-gray-800">
+            Benefits
           </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
+          <a href="#features" className="text-gray-600 hover:text-gray-800">
+            Features
           </a>
+          <a href="#about-us" className="text-gray-600 hover:text-gray-800">
+            About Us
+          </a>
+          <button className="px-4 py-2 bg-black text-white rounded">Sign In</button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </nav>
+
+      {/* Above-the-Fold Section */}
+      <header className="flex items-center justify-between p-12 bg-gray-50 min-h-[80vh]">
+        {/* Left Content */}
+        <div className="max-w-lg space-y-6">
+          <h1 className="text-4xl font-extrabold text-gray-900">
+            Simplify your government forms.
+          </h1>
+          <p className="text-lg text-gray-600">
+            Temp is an online assistant to simplify all your forms, generating action items that are easy to follow.
+          </p>
+          <button
+            onClick={scrollToUploadSection}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg shadow hover:bg-blue-700"
+          >
+            Get Started
+          </button>
+        </div>
+        {/* Right Content */}
+        <div className="w-1/2">
+          <img
+            src="/placeholder.png"
+            alt="Placeholder"
+            className="w-full h-auto"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+      </header>
+
+      {/* Below-the-Fold Section */}
+      <div
+        ref={uploadSectionRef}
+        className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6"
+      >
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">Upload Your File</h2>
+
+        {/* Drag-and-Drop Area */}
+        <div
+          onClick={openFileDialog}
+          className="border-2 border-dashed rounded-lg w-full max-w-xl p-6 text-center bg-white transition-colors hover:bg-gray-100 cursor-pointer"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <p className="text-gray-600">Click to select a file</p>
+        </div>
+
+        {/* Hidden File Input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
+
+        {/* Upload Status */}
+        {uploadStatus && (
+          <p
+            className={`mt-4 text-sm ${
+              uploadStatus.includes("successful") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {uploadStatus}
+          </p>
+        )}
+
+        {/* Uploaded File Name */}
+        {uploadedFileName && (
+          <div className="mt-6 w-full max-w-xl bg-white rounded shadow-md p-4">
+            <h2 className="text-lg font-medium mb-2 text-gray-800">
+              Uploaded File:
+            </h2>
+            <p className="text-sm text-gray-700">{uploadedFileName}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
