@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Results() {
-  const [status, setStatus] = useState("loading"); // 'loading', 'success', 'error'
+function ResultsContent() {
+  const [status, setStatus] = useState("loading");
   const [result, setResult] = useState<string | null>(null);
   const searchParams = useSearchParams();
-  const recordId = searchParams?.get("id"); // Get recordId from query params
+  const recordId = searchParams?.get("id");
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -21,10 +21,10 @@ export default function Results() {
         const data = await response.json();
 
         if (data.success) {
-          setResult(data.result); // Set the ChatGPT result
+          setResult(data.result);
           setStatus("success");
         } else {
-          setStatus("error"); // Handle error states
+          setStatus("error");
         }
       } catch (error) {
         console.error("Error fetching results:", error);
@@ -38,8 +38,12 @@ export default function Results() {
   if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Getting your results...</h1>
-        <p className="text-gray-600">This may take a moment, please be patient.</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">
+          Getting your results...
+        </h1>
+        <p className="text-gray-600">
+          This may take a moment, please be patient.
+        </p>
       </div>
     );
   }
@@ -47,17 +51,26 @@ export default function Results() {
   if (status === "error") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-        <h1 className="text-3xl font-bold text-red-600 mb-4">Something went wrong</h1>
+        <h1 className="text-3xl font-bold text-red-600 mb-4">
+          Something went wrong
+        </h1>
         <p className="text-gray-600">Please try again later or contact support.</p>
       </div>
     );
   }
 
-  // Render results when available
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Results</h1>
       <p className="text-gray-700 max-w-2xl text-center">{result}</p>
     </div>
+  );
+}
+
+export default function Results() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResultsContent />
+    </Suspense>
   );
 }
