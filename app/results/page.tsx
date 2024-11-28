@@ -7,7 +7,7 @@ export default function Results() {
   const [status, setStatus] = useState("loading"); // 'loading', 'success', 'error'
   const [result, setResult] = useState<string | null>(null);
   const searchParams = useSearchParams();
-  const recordId = searchParams.get("id"); // Get recordId from query params
+  const recordId = searchParams?.get("id"); // Get recordId from query params
 
   useEffect(() => {
     const fetchResults = async () => {
