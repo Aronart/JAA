@@ -64,7 +64,6 @@ export default function Home() {
         <iframe
           className="airtable-embed"
           src="https://airtable.com/embed/app5grOBv8PHGr3PU/pag3x9bbNyVZh9zhV/form"
-          frameBorder="0"
           width="100%"
           height="600"
           style={{ background: "transparent", border: "1px solid #ccc" }}
