@@ -73,14 +73,10 @@ function ResultsContent() {
         <p className="text-gray-600 mb-4">
           {error || "Please try again later or contact support."}
         </p>
-        <p className="text-sm text-gray-500">
-          If the issue persists, please check your API or logs for more details.
-        </p>
       </div>
     );
   }
 
-  // Render results when available
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Results</h1>

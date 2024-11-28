@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAirtableRecord } from "../../../lib/airtable";
+import { getAirtableRecord } from "../../../lib/airtable"; // Ensure you have the lib/airtable.ts utility
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
