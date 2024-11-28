@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Results() {
+function ResultsContent() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [result, setResult] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null); // Store error messages for debugging
+  const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const recordId = searchParams?.get("id");
 
@@ -86,5 +86,13 @@ export default function Results() {
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Your Results</h1>
       <p className="text-gray-700 max-w-2xl text-center">{result}</p>
     </div>
+  );
+}
+
+export default function Results() {
+  return (
+    <Suspense fallback={<div>Loading your results...</div>}>
+      <ResultsContent />
+    </Suspense>
   );
 }
