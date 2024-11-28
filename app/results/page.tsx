@@ -17,7 +17,7 @@ function ResultsContent() {
           return;
         }
 
-        const response = await fetch(`/api/results?id=${recordId}`);
+        const response = await fetch(`/api/result?id=${recordId}`);
         const data = await response.json();
 
         if (data.success) {
