@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// Temporary in-memory storage (replace with a database for persistence)
+// Temporary in-memory storage
 const results: Record<string, string> = {};
 
 export async function POST(request: Request) {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Store the result in memory (use a database in production)
+    // Store the result in memory
     results[recordId] = result;
     console.log(`Stored result for Record ID: ${recordId}`);
 
